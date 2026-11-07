@@ -146,7 +146,7 @@
     <header id="header-title">⏱️ Temps & Travail</header>
 
     <div class="container">
-
+        
         <!-- PAGE 1 : TEMPS ET TRAVAIL -->
         <div id="page-temps" class="page active">
             <div class="card">
@@ -191,7 +191,7 @@
                 <input type="datetime-local" id="rdv-date">
                 <button onclick="addRdv()">Ajouter à l'agenda</button>
             </div>
-
+            
             <div class="card">
                 <h2>🗓️ Mes Prochains Rendez-vous</h2>
                 <div id="liste-rdv" class="liste-elements"></div>
@@ -266,10 +266,10 @@
         function switchPage(pageId, title) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-
+            
             document.getElementById('page-' + pageId).classList.add('active');
             document.getElementById('header-title').innerText = title;
-
+            
             if (event && event.currentTarget) {
                 event.currentTarget.classList.add('active');
             }
@@ -280,3 +280,4 @@
             const num = document.getElementById('pere-telephone').value;
             const dateGarde = document.getElementById('garde-date').value;
             if(!num) { alert("Veuillez entrer le numéro du père"); return; }
+            
