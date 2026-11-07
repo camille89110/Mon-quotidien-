@@ -1,1 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Assistant Personnel</title>
+    <style>
+        :root {
+            --rose-poudre: #F7E1D7;
+            --rose-moyen: #EDC4B3;
+            --rose-fonce: #DEAB90;
+            --texte: #4A3E3D;
+            --blanc: #FFFFFF;
+            --vert: #A8DADC;
+        }
 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--rose-poudre);
+            color: var(--texte);
+            margin: 0;
+            padding: 0;
+            padding-bottom: 80px;
+        }
+
+        header {
+            background-color: var(--rose-moyen);
+            text-align: center;
+            padding: 20px;
+            font-size: 1.4em;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--blanc);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(237, 196, 179, 0.3);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--texte);
+            font-size: 1.2em;
+            border-bottom: 2px solid var(--rose-poudre);
+            padding-bottom: 8px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--rose-moyen);
+            border-radius: 8px;
+            box-sizing: border-box;
+            background-color: #FFFDFD;
+            color: var(--texte);
+        }
+
+        button {
+            background-color: var(--rose-fonce);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 25px;
+            width: 100%;
+            font-weight: bold;
+            font-size: 1em;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #CD9377;
+        }
+
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: var(--blanc);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            font-size: 1.5em;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+            color: #A39391;
+        }
+
+        .nav-item.active {
+            color: var(--rose-fonce);
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .flex-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .liste-elements {
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        .element-item {
+            background: #FFFDFD;
+            padding: 10px;
+            border-left: 4px solid var(--rose-moyen);
+            margin-bottom: 8px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <header id="header-title">📅 Temps & Agendas</header>
+
+    <div class="container">
+
+        <!-- PAGE 1 : TEMPS ET TRAVAIL -->
+        <div id="page-temps" class="page active">
+            <div class="card">
+                <h2>⏱️ Heures de travail & Samedi</h2>
+                <div class="flex-group">
+                    <div>
+                        <label>Début</label>
+                        <input type="time" id="travail-debut">
+                    </div>
+                    <div>
+                        <label>Fin</label>
+                        <input type="time" id="travail-fin">
+                    </div>
+                </div>
+                <label><input type="checkbox" id="travail-samedi" style="width: auto; margin-right: 8px;"> J'ai travaillé ce samedi hebdomadaire</label>
+                <button onclick="saveTravail()">Enregistrer la journée</button>
+            </div>
+
+            <div class="card">
+                <h2>🚗 Temps de Trajet</h2>
+                <label>Durée du trajet (en minutes)</label>
+                <input type="number" id="trajet-temps" placeholder="Ex: 25">
+                <button onclick="saveTrajet()">Enregistrer le trajet</button>
+            </div>
+        </div>
+
+        <!-- PAGE 2 : RENDEZ-VOUS -->
+        <div id="page-rdv" class="page">
+            <div class="card">
+                <h2>➕ Ajouter un Rendez-vous</h2>
+                <label>Titre / Motif</label>
+                <input type="text" id="rdv-titre" placeholder="Ex: Dentiste, Réunion Pro...">
+                <label>Type de RDV</label>
+                <select id="rdv-type">
+                    <option value="Professionnel">💼 Professionnel</option>
+                    <option value="Personnel">🌸 Personnel</option>
+                    <option value="Médical">🩺 Médical</option>
+                </select>
+                <label>Date et Heure</label>
+                <input type="datetime-local" id="rdv-date">
+                <button onclick="addRdv()">Ajouter à l'agenda</button>
+            </div>
+
+            <div class="card">
+                <h2>🗓️ Mes Prochains Rendez-vous</h2>
+                <div id="liste-rdv" class="liste-elements"></div>
+            </div>
+        </div>
+
+        <!-- PAGE 3 : CYCLES -->
+        <div id="page-cycles" class="page">
+            <div class="card">
+                <h2>🩸 Suivi de Cycle Menstruel</h2>
+                <label>Date de début des dernières règles</label>
+                <input type="date" id="cycle-date">
+                <label>Durée moyenne du cycle (jours)</label>
+                <input type="number" id="cycle-duree" value="28">
+                <button onclick="saveCycle()">Mettre à jour mon cycle</button>
+                <div id="cycle-predictions" style="margin-top: 15px; font-weight: bold; color: #B57A63;"></div>
+            </div>
+        </div>
+
+        <!-- PAGE 4 : FINANCES -->
+        <div id="page-finances" class="page">
+            <div class="card">
+                <h2>💰 Faire mes Comptes</h2>
+                <label>Description de l'opération</label>
+                <input type="text" id="finance-titre" placeholder="Ex: Courses, Salaire...">
+                <label>Montant (€)</label>
+                <input type="number" id="finance-montant" step="0.01" placeholder="Ex: -45.50 ou 1500">
+                <small style="color: #888;">Mettre un signe moins (-) pour les dépenses.</small>
+                <button onclick="addTransaction()">Enregistrer</button>
+            </div>
+            <div class="card">
+                <h2>📊 Solde Actuel : <span id="solde-total">0.00</span> €</h2>
+                <div id="liste-finances" class="liste-elements"></div>
+            </div>
+        </div>
+
+        <!-- PAGE 5 : ENFANT & GARDE -->
+        <div id="page-garde" class="page">
+            <div class="card">
+                <h2>🤝 Planning Garde Alternée</h2>
+                <label>Qui a la garde cette semaine ?</label>
+                <select id="garde-actuelle">
+                    <option value="Maman">Moi (Maman)</option>
+                    <option value="Papa">Le Papa</option>
+                </select>
+                <label>Date de changement de garde</label>
+                <input type="date" id="garde-date">
+            </div>
+
+            <div class="card">
+                <h2>📲 Rappel Automatique au Papa</h2>
+                <p style="font-size: 0.9em; color: #666;">Ce bouton génère automatiquement un SMS pré-rempli à envoyer au père de votre fils.</p>
+                <label>Numéro de téléphone du père</label>
+                <input type="tel" id="pere-telephone" placeholder="Ex: 0612345678">
+                <button onclick="envoyerSMS()">💬 Préparer et Envoyer le SMS</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BARRE DE NAVIGATION EN BAS -->
+    <nav class="nav-bar">
+        <button class="nav-item active" onclick="switchPage('temps', '⏱️ Temps & Travaill')">⏱️</button>
+        <button class="nav-item" onclick="switchPage('rdv', '🗓️ Rendez-vous')">🗓️</button>
+        <button class="nav-item" onclick="switchPage('cycles', '🩸 Mon Cycle')">🩸</button>
+        <button class="nav-item" onclick="switchPage('finances', '💰 Finances')">💰</button>
+        <button class="nav-item" onclick="switchPage('garde', '🤝 Garde & SMS')">🤝</button>
+    </nav>
+
+    <script>
+        // --- SYSTEME DE NAVIGATION ---
+        function switchPage(pageId, title) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+
+            document.getElementById('page-' + pageId).classList.add('active');
+            document.getElementById('header-title').innerText = title;
+
+            // Mettre le bouton actif
+            event.currentTarget.classList.add('active');
+        }
+
+        // --- RAPPELS SMS ET SEURITE LIMITES WEB ---
+        // Les navigateurs bloquent l'envoi de SMS en arrière-plan sans action de l'utilisateur.
+        // Ce bouton ouvre l'application SMS native pré-remplie !
+        function envoyerSMS() {
+            const num = document.getElementById('pere-telephone').value;
+            const dateGarde = document.getElementById('garde-date').value;
+            if(!num) { alert("Veuillez entrer le numéro du père"); return; }
