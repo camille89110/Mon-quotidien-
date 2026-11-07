@@ -143,7 +143,7 @@
 </head>
 <body>
 
-    <header id="header-title">📅 Temps & Agendas</header>
+    <header id="header-title">⏱️ Temps & Travail</header>
 
     <div class="container">
 
@@ -161,7 +161,9 @@
                         <input type="time" id="travail-fin">
                     </div>
                 </div>
-                <label><input type="checkbox" id="travail-samedi" style="width: auto; margin-right: 8px;"> J'ai travaillé ce samedi hebdomadaire</label>
+                <label style="display: flex; align-items: center; margin-top: 15px;">
+                    <input type="checkbox" id="travail-samedi" style="width: auto; margin-right: 8px;"> J'ai travaillé ce samedi hebdomadaire
+                </label>
                 <button onclick="saveTravail()">Enregistrer la journée</button>
             </div>
 
@@ -252,7 +254,7 @@
 
     <!-- BARRE DE NAVIGATION EN BAS -->
     <nav class="nav-bar">
-        <button class="nav-item active" onclick="switchPage('temps', '⏱️ Temps & Travaill')">⏱️</button>
+        <button class="nav-item active" onclick="switchPage('temps', '⏱️ Temps & Travail')">⏱️</button>
         <button class="nav-item" onclick="switchPage('rdv', '🗓️ Rendez-vous')">🗓️</button>
         <button class="nav-item" onclick="switchPage('cycles', '🩸 Mon Cycle')">🩸</button>
         <button class="nav-item" onclick="switchPage('finances', '💰 Finances')">💰</button>
@@ -268,13 +270,12 @@
             document.getElementById('page-' + pageId).classList.add('active');
             document.getElementById('header-title').innerText = title;
 
-            // Mettre le bouton actif
-            event.currentTarget.classList.add('active');
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
         }
 
-        // --- RAPPELS SMS ET SEURITE LIMITES WEB ---
-        // Les navigateurs bloquent l'envoi de SMS en arrière-plan sans action de l'utilisateur.
-        // Ce bouton ouvre l'application SMS native pré-remplie !
+        // --- RAPPELS SMS ---
         function envoyerSMS() {
             const num = document.getElementById('pere-telephone').value;
             const dateGarde = document.getElementById('garde-date').value;
